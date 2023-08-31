@@ -1,10 +1,10 @@
-package com.example.jetmausam.screens
+package com.example.jetmausam.screens.main
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun SplashScreen(
+fun MainScreen(
     navController: NavController
 ) {
 
