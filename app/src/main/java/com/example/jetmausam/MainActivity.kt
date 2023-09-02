@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetmausam.navigation.MausamNavigation
+import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.ui.theme.JetMausamTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,6 +41,7 @@ fun MausamApp() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+//                val viewModel: MainViewModel = viewModel()
                 MausamNavigation()
             }
         }

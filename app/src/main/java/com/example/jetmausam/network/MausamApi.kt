@@ -20,7 +20,7 @@ interface MausamApi {
     @GET("geo/1.0/direct")
     suspend fun getCoordinates(
         @Query("q") q: String,
-        @Query("limit") limit: String = "1",
+        @Query("limit") limit: Int = 1,
         @Query("appid") appid: String = AppConstants.API_KEY
     ): GeoCodingData
 
