@@ -12,8 +12,8 @@ interface MausamApi {
 
     @GET("data/2.5/forecast")
     suspend fun getMausamData(
-        @Query("lat") lat: String,
-        @Query("lon") lon: String,
+        @Query("lat") lat: String?,
+        @Query("lon") lon: String?,
         @Query("appid") appid: String = AppConstants.API_KEY
     ): MausamData
 
