@@ -15,7 +15,7 @@ class MausamRepository @Inject constructor(private val api: MausamApi){
         lonQuery: String?,
     ): DataOrException <MausamData, Boolean, Exception> {
 
-        val response = try {
+        val response: MausamData = try {
             api.getMausamData(lat = latQuery, lon = lonQuery)
         } catch(e: Exception) {
             return DataOrException(e = e)
@@ -27,11 +27,12 @@ class MausamRepository @Inject constructor(private val api: MausamApi){
         city: String
     ): DataOrException<GeoCodingData, Boolean, Exception> {
 
-        val response = try {
+        val response: GeoCodingData = try {
             api.getCoordinates(q = city, limit = 1, appid = AppConstants.API_KEY)
         } catch (e: Exception) {
             return DataOrException(e = e)
         }
+        if(response.isEmpty()) return DataOrException(e = Exception("City Not Found"))
         return DataOrException(data = response)
     }
 
