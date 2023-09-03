@@ -57,6 +57,7 @@ dependencies {
     val hiltVersion = "2.44"
     val composeVersion = "1.0.5"
     val roomVersion = "2.5.2"
+    val constraintLayoutVersion = "1.0.1"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -111,8 +112,17 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
+    //constraint layout
+    implementation("androidx.constraintlayout:constraintlayout-compose:$constraintLayoutVersion")
+
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.2.2")
+
+    //google fonts
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.4.3")
 
 }
