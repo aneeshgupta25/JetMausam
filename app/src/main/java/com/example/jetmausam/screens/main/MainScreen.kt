@@ -38,35 +38,52 @@ import com.example.jetmausam.R
 import com.example.jetmausam.data.DataOrException
 import com.example.jetmausam.model.geocoding.GeoCodingData
 import com.example.jetmausam.model.mausam.MausamData
+import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.widgets.MausamAppBar
 import com.example.jetmausam.widgets.MausamCard
+import java.time.Instant
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
     navController: NavController
 ) {
-    val geocodingData = produceState<DataOrException<GeoCodingData, Boolean, Exception>>(
-        initialValue = DataOrException(loading = true)
-    ) {
-        value = viewModel.getCoordinates("Delhi, IN")
-    }
-    val mausamData = viewModel.mausamState.value
-    LaunchedEffect(key1 = geocodingData.value) {
-        if(geocodingData.value.loading != true) {
-            val longitude = geocodingData.value.data!![0].lon
-            val latitude = geocodingData.value.data!![0].lat
-            viewModel.getMausam(lat = latitude.toString(), lon = longitude.toString())
+//    val geocodingData = produceState<DataOrException<GeoCodingData, Boolean, Exception>>(
+//        initialValue = DataOrException(loading = true)
+//    ) {
+//        value = viewModel.getCoordinates("Delhi, IN")
+//    }
+//    val mausamData = viewModel.mausamState.value
+//    LaunchedEffect(key1 = geocodingData.value) {
+//        if(geocodingData.value.loading != true) {
+//            val longitude = geocodingData.value.data!![0].lon
+//            val latitude = geocodingData.value.data!![0].lat
+//            viewModel.getMausam(lat = latitude.toString(), lon = longitude.toString())
+//        }
+//    }
+//    if(geocodingData.value.loading == true || mausamData.loading == true) {
+//        CircularProgressIndicator()
+//    } else if(geocodingData.value.e != null || mausamData.e != null) {
+//        // handle exceptions case
+//    } else {
+//        MainScaffold(viewModel, navController)
+//    }
+//    viewModel.getMausam("Delhi, IN")
+    val mausamData = viewModel.mausamData.value
+
+    LaunchedEffect(key1 = Unit) {
+        if(mausamData.loading == true) {
+            viewModel.getMausam("Delhi, IN")
         }
     }
-    if(geocodingData.value.loading == true || mausamData.loading == true) {
+    if(mausamData.loading == true) {
         CircularProgressIndicator()
-    } else if(geocodingData.value.e != null || mausamData.e != null) {
-        // handle exceptions case
+    } else if(mausamData.e != null) {
+
     } else {
-        MainScaffold(navController)
+        MainScaffold(viewModel = viewModel, navController = navController)
     }
 }
 
@@ -74,8 +91,10 @@ fun MainScreen(
 //@Preview
 @Composable
 fun MainScaffold(
+    viewModel: MainViewModel,
     navController: NavController
 ) {
+    var mausamData = viewModel.mausamData.value
     Scaffold(
         topBar = { MausamAppBar() },
         containerColor = Color.Transparent,
@@ -101,9 +120,11 @@ fun MainScaffold(
                 MausamCard(
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
-                        .fillMaxHeight(0.6f)
+                        .fillMaxHeight(0.6f),
+                    stateAndCountry = "${mausamData.data!!.city.name}, ${mausamData.data!!.city.country}",
+                    utcTime = Instant.now().toEpochMilli()
                 ) {
-
+                    navController.navigate(MausamScreens.StatsScreen.name)
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 MausamInfoSurface(modifier = Modifier

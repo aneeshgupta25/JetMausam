@@ -10,6 +10,7 @@ import javax.inject.Singleton
 @Singleton
 interface MausamApi {
 
+    //get weather details
     @GET("data/2.5/forecast")
     suspend fun getMausamData(
         @Query("lat") lat: String?,
@@ -17,6 +18,7 @@ interface MausamApi {
         @Query("appid") appid: String = AppConstants.API_KEY
     ): MausamData
 
+    // get coordinates for city
     @GET("geo/1.0/direct")
     suspend fun getCoordinates(
         @Query("q") q: String,

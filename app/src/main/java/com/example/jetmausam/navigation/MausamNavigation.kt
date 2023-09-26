@@ -8,20 +8,24 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetmausam.screens.main.MainScreen
 import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.screens.splash.SplashScreen
+import com.example.jetmausam.screens.stats.StatsScreen
 
 @Composable
 fun MausamNavigation() {
     val navController = rememberNavController()
+    val mainViewModel = hiltViewModel<MainViewModel>()
     NavHost(
         navController = navController,
-        startDestination = MausamScreens.SplashScreen.name
+        startDestination = MausamScreens.MainScreen.name
     ) {
         composable(route = MausamScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
         composable(route = MausamScreens.MainScreen.name) {
-            val mainViewModel = hiltViewModel<MainViewModel>()
             MainScreen(navController = navController, viewModel = mainViewModel)
+        }
+        composable(route = MausamScreens.StatsScreen.name) {
+            StatsScreen(viewModel = mainViewModel)
         }
     }
 }

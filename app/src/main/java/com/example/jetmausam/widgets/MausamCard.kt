@@ -1,6 +1,7 @@
 package com.example.jetmausam.widgets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,11 +49,14 @@ import coil.compose.rememberImagePainter
 import coil.decode.SvgDecoder
 import com.example.jetmausam.R
 import com.example.jetmausam.utils.MyFonts
+import com.example.jetmausam.utils.UTCtoISTFormatter
 
 @Preview
 @Composable
 fun MausamCard(
     modifier: Modifier = Modifier.fillMaxSize(),
+    stateAndCountry: String = "Delhi, IN",
+    utcTime: Long = 0,
     onClick: ()->Unit = {}
 ) {
     ConstraintLayout(
@@ -94,7 +98,7 @@ fun MausamCard(
             })
 
         Card(
-            modifier = Modifier.constrainAs(button) {
+            modifier = Modifier.clickable {onClick.invoke()}.constrainAs(button) {
                 top.linkTo(buttonTopGuideline)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -137,34 +141,20 @@ fun MausamCard(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                Text(text = "Delhi, India",
+                Text(text = stateAndCountry,
                     fontFamily = MyFonts.alegreyaSansFamily,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black)
 
-                Row {
-                    Text(text = "15",
-                        fontFamily = MyFonts.alegreyaSansFamily,
-                        fontSize = 50.sp,
-                        fontWeight = FontWeight.Bold,
-                        style = LocalTextStyle.current.merge(
-                            TextStyle(
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                ),
-                            )
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(text = "°C",
-                        fontFamily = MyFonts.alegreyaSansFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        style = MaterialTheme.typography.labelLarge)
-                }
+                TempRow(
+                    valueFontSize = 50.sp,
+                    unitFontSize = 20.sp,
+                    valueText = "15",
+                    unitInCel = true
+                )
 
-                Text(text = "Sunday, 1 am",
+                Text(text = UTCtoISTFormatter.formatUTCtoIST(utcTime),
                     fontFamily = MyFonts.alegreyaSansFamily,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Normal,
