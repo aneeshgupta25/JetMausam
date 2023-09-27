@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,7 @@ import com.example.jetmausam.model.mausam.MausamDailyData
 import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.utils.ScreenConfig
+import com.example.jetmausam.widgets.FutureMausamRow
 import com.example.jetmausam.widgets.MausamCard
 import com.example.jetmausam.widgets.MausamInfoCard
 import com.example.jetmausam.widgets.TempRow
@@ -180,7 +182,20 @@ fun StatsScreen(
                         .weight(2.5f)
                         .fillMaxWidth(),
                 ) {
-
+                    LazyColumn(
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                        contentPadding = PaddingValues(vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
+                        items(listOf(1,2,3,4,5)) {
+                            FutureMausamRow(
+                                valueFontSize = 25.sp,
+                                unitFontSize = 15.sp,
+                                valueText = "15",
+                                unitInCel = true
+                            )
+                        }
+                    }
                 }
             }
         }
