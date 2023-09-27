@@ -5,19 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,38 +20,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import coil.decode.SvgDecoder
 import com.example.jetmausam.R
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.utils.UTCtoISTFormatter
 
 @Preview
 @Composable
-fun MausamCard(
+fun  MausamCard(
     modifier: Modifier = Modifier.fillMaxSize(),
     stateAndCountry: String = "Delhi, IN",
     utcTime: Long = 0,
+    tempUnit: TextUnit = 50.sp,
+    otherTextUnit: TextUnit = 20.sp,
+    cornerRadius: Dp = 35.dp,
+    canNavigateToNextScreen: Boolean = true,
     onClick: ()->Unit = {}
 ) {
     ConstraintLayout(
@@ -80,7 +66,8 @@ fun MausamCard(
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
             },
-            shape = RoundedCornerShape(corner = CornerSize(35.dp)),
+            elevation = CardDefaults.cardElevation(5.dp),
+            shape = RoundedCornerShape(corner = CornerSize(cornerRadius)),
             colors = CardDefaults.cardColors(Color.White)
         ) {
 
@@ -97,29 +84,33 @@ fun MausamCard(
                 width = Dimension.fillToConstraints
             })
 
-        Card(
-            modifier = Modifier.clickable {onClick.invoke()}.constrainAs(button) {
-                top.linkTo(buttonTopGuideline)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
+        if(canNavigateToNextScreen) {
+            Card(
+                modifier = Modifier
+                    .clickable { onClick.invoke() }
+                    .constrainAs(button) {
+                        top.linkTo(buttonTopGuideline)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
 
-                height = Dimension.fillToConstraints
-                width = Dimension.percent(0.7f)
-            },
-            shape = RoundedCornerShape(corner = CornerSize(35.dp)),
-            colors = CardDefaults.cardColors(Color(0xFF5E4FC1))
-        ) {
-            Box(modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                        height = Dimension.fillToConstraints
+                        width = Dimension.percent(0.7f)
+                    },
+                shape = RoundedCornerShape(corner = CornerSize(35.dp)),
+                colors = CardDefaults.cardColors(Color(0xFF5E4FC1))
             ) {
-                Text(
-                    text = "VIEW STATS",
-                    fontFamily = MyFonts.alegreyaSansFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Box(modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "VIEW STATS",
+                        fontFamily = MyFonts.alegreyaSansFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
         }
 
@@ -137,49 +128,83 @@ fun MausamCard(
                 },
             color = Color.Transparent
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Text(text = stateAndCountry,
-                    fontFamily = MyFonts.alegreyaSansFamily,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black)
-
-                TempRow(
-                    valueFontSize = 50.sp,
-                    unitFontSize = 20.sp,
-                    valueText = "15",
+            if(canNavigateToNextScreen) {
+                TextContentIfNavigable(
+                    stateAndCountry = stateAndCountry,
+                    otherTextUnit = otherTextUnit,
+                    tempUnit = tempUnit,
+                    utcTime = utcTime,
+                    tempValue = "15",
                     unitInCel = true
                 )
-
-                Text(text = UTCtoISTFormatter.formatUTCtoIST(utcTime),
-                    fontFamily = MyFonts.alegreyaSansFamily,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.LightGray)
-
-//                Text(text = buildAnnotatedString {
-//                    withStyle(style = ParagraphStyle(textIndent = TextIndent.None)) {
-//                        withStyle(style = SpanStyle(
-//                            fontWeight = FontWeight.Bold,
-//                            fontSize = 50.sp
-//                        )) {
-//                            append("15")
-//                        }
-//                        withStyle(style = SpanStyle(
-//                            fontWeight = FontWeight.Bold,
-//                            fontSize = 20.sp
-//                        )) {
-//                            append("C")
-//                        }
-//                    }
-//                },
-//                    modifier = Modifier.weight(0.8f),
-//                    textAlign = TextAlign.)
-
+            } else {
+                TextContentIfNotNavigable(
+                    otherTextUnit = otherTextUnit,
+                    tempUnit = tempUnit,
+                    tempValue = "15",
+                    unitInCel = true
+                )
             }
         }
+    }
+}
+
+@Composable
+fun TextContentIfNavigable(stateAndCountry: String,
+                           tempValue: String,
+                           unitInCel: Boolean,
+                           otherTextUnit: TextUnit,
+                           tempUnit: TextUnit,
+                           utcTime: Long) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        Text(text = stateAndCountry,
+            fontFamily = MyFonts.alegreyaSansFamily,
+            fontSize = otherTextUnit,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black)
+
+        TempRow(
+            valueFontSize = tempUnit,
+            unitFontSize = otherTextUnit,
+            valueText = "15",
+            unitInCel = unitInCel
+        )
+
+        Text(text = UTCtoISTFormatter.formatUTCtoIST(utcTime),
+            fontFamily = MyFonts.alegreyaSansFamily,
+            fontSize = otherTextUnit,
+            fontWeight = FontWeight.Normal,
+            color = Color(0xFF332821).copy(alpha = 0.5f))
+
+    }
+}
+
+@Composable
+fun TextContentIfNotNavigable(
+    tempValue: String,
+    unitInCel: Boolean,
+    tempUnit: TextUnit,
+    otherTextUnit: TextUnit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TempRow(
+            valueFontSize = tempUnit,
+            unitFontSize = otherTextUnit,
+            valueText = "15",
+            unitInCel = unitInCel
+        )
+
+        Text(text = "10 am",
+            fontFamily = MyFonts.alegreyaSansFamily,
+            fontSize = otherTextUnit,
+            fontWeight = FontWeight.Normal,
+            color = Color.LightGray)
     }
 }
