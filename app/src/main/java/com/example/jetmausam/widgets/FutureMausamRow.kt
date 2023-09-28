@@ -31,6 +31,7 @@ fun FutureMausamRow(
     valueFontSize: TextUnit = 35.sp,
     unitFontSize: TextUnit = 20.sp,
     day: String = "Monday",
+    imgId: Int = R.drawable.rain_d,
     minTemp: Double = 0.0,
     maxTemp: Double = 0.0,
     unitInCel: Boolean = true
@@ -48,7 +49,7 @@ fun FutureMausamRow(
             modifier = Modifier.weight(0.35f).height(30.dp).background(Color.Transparent),
             contentAlignment = Alignment.Center
         ) {
-            Image(painter = painterResource(id = R.drawable.wind_info_col), contentDescription = "",
+            Image(painter = painterResource(id = imgId), contentDescription = "",
                 contentScale = ContentScale.FillHeight)
         }
         TempRow(

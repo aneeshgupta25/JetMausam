@@ -39,6 +39,7 @@ fun  MausamCard(
     stateAndCountry: String = "Delhi, IN",
     utcTime: Long = 0,
     tempValue: Double = 15.0,
+    imgId: Int = R.drawable.clear_sky_d,
     tempUnit: TextUnit = 50.sp,
     otherTextUnit: TextUnit = 20.sp,
     cornerRadius: Dp = 35.dp,
@@ -73,7 +74,7 @@ fun  MausamCard(
 
         }
 
-        Image(painter = painterResource(id = R.drawable.hello), contentDescription = "Image",
+        Image(painter = painterResource(id = imgId), contentDescription = "Image",
             modifier = Modifier.constrainAs(image) {
                 top.linkTo(parent.top)
                 bottom.linkTo(imageBottomGuideline)

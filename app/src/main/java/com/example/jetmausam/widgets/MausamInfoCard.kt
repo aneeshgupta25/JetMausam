@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CornerSize
@@ -44,7 +45,7 @@ fun MausamInfoCard(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .wrapContentWidth()
                 .fillMaxHeight(0.5f)
                 .clip(RoundedCornerShape(corner = CornerSize(20.dp)))
                 .background(color = backgroundColor),
@@ -52,12 +53,12 @@ fun MausamInfoCard(
             horizontalArrangement = Arrangement.Center
         ) {
             Image(painter = painterResource(id = imageResource), contentDescription = "",
-                modifier = Modifier.weight(2f).fillMaxHeight(0.9f),
+                modifier = Modifier.fillMaxHeight(0.9f),
                 contentScale = ContentScale.Fit)
             Text(
                 text = value,
+                modifier = Modifier.padding(horizontal = 5.dp),
                 color = contentColor,
-                modifier = Modifier.weight(3f),
                 textAlign = TextAlign.Center,
                 fontSize = 15.sp,
                 fontFamily = MyFonts.alegreyaSansFamily,

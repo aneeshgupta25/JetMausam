@@ -73,7 +73,9 @@ fun StatsScreen(
                         .padding(horizontal = 20.dp)
                         .fillMaxWidth(),
                 ) {
-                    Image(painter = painterResource(id = R.drawable.hello),
+                    Image(painter = painterResource(id = viewModel.getCustomImageOfMausam(
+                        sevenDaysMausamData.data!!.list[0].weather[0].icon)
+                    ),
                         contentDescription = "",
                         modifier = Modifier.graphicsLayer(alpha = 0.5f),
                         contentScale = ContentScale.FillHeight)
@@ -122,17 +124,17 @@ fun StatsScreen(
                             .fillMaxHeight()
                         MausamInfoCard(modifier = cardModifier,
                             imageResource = R.drawable.rain_info_col,
-                            value = "6%",
+                            value = "${sevenDaysMausamData.data!!.list[0].clouds}%",
                             backgroundColor = Color(0xFF658ED9).copy(alpha = 0.1f),
                             contentColor = Color(0xFF658ED9))
                         MausamInfoCard(modifier = cardModifier,
                             imageResource = R.drawable.humid_info_col,
-                            value = "90%",
+                            value = "${sevenDaysMausamData.data!!.list[0].humidity}%",
                             backgroundColor = Color(0xFFD86191).copy(alpha = 0.1f),
                             contentColor = Color(0xFFD86191))
                         MausamInfoCard(modifier = cardModifier,
                             imageResource = R.drawable.wind_info_col,
-                            value = "6 km/h",
+                            value = "${sevenDaysMausamData.data!!.list[0].speed}m/sec",
                             backgroundColor = Color(0xFF5E4FC1).copy(alpha = 0.1f),
                             contentColor = Color(0xFF5E4FC1))
                     }
@@ -168,6 +170,7 @@ fun StatsScreen(
                                         .width(screenWidth / 4),
                                     utcTime = "${it.dt_txt[11]}${it.dt_txt[12]}".toLong(),
                                     tempValue = it.main.temp,
+                                    imgId = viewModel.getCustomImageOfMausam(it.weather[0].icon),
                                     tempUnit = 30.sp,
                                     otherTextUnit = 18.sp,
                                     cornerRadius = 20.dp,
@@ -192,6 +195,7 @@ fun StatsScreen(
                                 valueFontSize = 25.sp,
                                 unitFontSize = 15.sp,
                                 day = viewModel.getCustomDayWeek(index),
+                                imgId = viewModel.getCustomImageOfMausam(it.weather[0].icon),
                                 minTemp = it.temp.min,
                                 maxTemp = it.temp.max,
                                 unitInCel = true

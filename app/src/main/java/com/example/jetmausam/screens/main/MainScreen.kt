@@ -114,14 +114,19 @@ fun MainScaffold(
                         .fillMaxHeight(0.6f),
                     stateAndCountry = "${sevenDaysMausamData.data!!.city.name}, ${sevenDaysMausamData.data!!.city.country}",
                     tempValue = sevenDaysMausamData.data!!.list[0].temp.day,
-                    utcTime = Instant.now().toEpochMilli()
+                    utcTime = Instant.now().toEpochMilli(),
+                    imgId = viewModel.getCustomImageOfMausam(defaultId = sevenDaysMausamData.data!!.list[0].weather[0].icon),
                 ) {
                     navController.navigate(MausamScreens.StatsScreen.name)
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 MausamInfoSurface(modifier = Modifier
                     .fillMaxHeight(0.5f)
-                    .fillMaxWidth(0.6f))
+                    .fillMaxWidth(0.6f),
+                    cloudinessValue = sevenDaysMausamData.data!!.list[0].clouds,
+                    humidityValue = sevenDaysMausamData.data!!.list[0].humidity,
+                    windSpeedValue = sevenDaysMausamData.data!!.list[0].speed
+                )
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
@@ -132,6 +137,9 @@ fun MainScaffold(
 @Composable
 fun MausamInfoSurface(
     modifier: Modifier = Modifier,
+    humidityValue: Int = 10,
+    windSpeedValue: Double = 10.0,
+    cloudinessValue: Int = 10
 ) {
     Column(
         modifier = modifier,
@@ -141,20 +149,20 @@ fun MausamInfoSurface(
         MausamInfoRow(
             modifier = Modifier.weight(1f),
             imageResource = R.drawable.rain_info,
-            text = "Precipitation",
-            value = "6%"
+            text = "Cloudiness",
+            value = "$cloudinessValue%"
         )
         MausamInfoRow(
             modifier = Modifier.weight(1f),
             imageResource = R.drawable.humid_info,
             text = "Humidity",
-            value = "90%"
+            value = "$humidityValue%"
         )
         MausamInfoRow(
             modifier = Modifier.weight(1f),
             imageResource = R.drawable.wind_info,
-            text = "Wind",
-            value = "19 km/h"
+            text = "Wind Speed",
+            value = "${windSpeedValue}m/sec"
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetmausam.R
 import com.example.jetmausam.data.DataOrException
 import com.example.jetmausam.model.current_day_mausam.CurrentDayMausamData
 import com.example.jetmausam.model.seven_days_mausam.SevenDaysMausamData
@@ -48,6 +49,31 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
 
     fun getCustomDayWeek(daysToAdd: Int): String {
         return currentCustomDayOfWeek.plus(daysToAdd).name
+    }
+
+    fun getCustomImageOfMausam(defaultId: String): Int {
+        return when(defaultId) {
+            "01d" -> R.drawable.clear_sky_d
+            "01n" -> R.drawable.clear_sky_n
+            "02d" -> R.drawable.few_clouds_d
+            "02n" -> R.drawable.few_clouds_n
+            "03d" -> R.drawable.scattered_clouds_d
+            "03n" -> R.drawable.shower_rain
+            "04d" -> R.drawable.scattered_clouds_d
+            "04n" -> R.drawable.shower_rain
+            "09d" -> R.drawable.rain_d
+            "09n" -> R.drawable.shower_rain
+            "10d" -> R.drawable.rain
+            "10n" -> R.drawable.shower_rain
+            "11d" -> R.drawable.thunderstorm_d
+            "11n" -> R.drawable.thunderstorm_n
+            "13d" -> R.drawable.snow_d
+            "13n" -> R.drawable.snow_n
+            "50d" -> R.drawable.mist
+            "50n" -> R.drawable.mist
+            else -> throw IllegalArgumentException("Invalid Icon: $defaultId")
+
+        }
     }
 
 }
