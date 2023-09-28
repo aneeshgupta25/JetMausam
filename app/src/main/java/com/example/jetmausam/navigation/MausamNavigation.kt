@@ -25,7 +25,7 @@ fun MausamNavigation() {
             MainScreen(navController = navController, viewModel = mainViewModel)
         }
         composable(route = MausamScreens.StatsScreen.name) {
-            StatsScreen()
+            StatsScreen(viewModel = mainViewModel)
         }
     }
 }

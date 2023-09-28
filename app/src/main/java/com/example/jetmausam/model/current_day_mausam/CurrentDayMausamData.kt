@@ -1,6 +1,6 @@
-package com.example.jetmausam.model.mausam
+package com.example.jetmausam.model.current_day_mausam
 
-data class MausamData(
+data class CurrentDayMausamData(
     val city: City,
     val cnt: Int,
     val cod: String,

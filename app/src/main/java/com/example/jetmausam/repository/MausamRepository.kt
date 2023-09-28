@@ -1,23 +1,34 @@
 package com.example.jetmausam.repository
 
-import android.util.Log
 import com.example.jetmausam.data.DataOrException
 import com.example.jetmausam.model.geocoding.GeoCodingData
-import com.example.jetmausam.model.mausam.MausamData
+import com.example.jetmausam.model.current_day_mausam.CurrentDayMausamData
+import com.example.jetmausam.model.seven_days_mausam.SevenDaysMausamData
 import com.example.jetmausam.network.MausamApi
 import com.example.jetmausam.utils.AppConstants
 import javax.inject.Inject
 
 class MausamRepository @Inject constructor(private val api: MausamApi){
 
-    suspend fun getMausamData(
-        latQuery: String?,
-        lonQuery: String?,
-    ): DataOrException <MausamData, Boolean, Exception> {
+    suspend fun getCurrentDayMausamData(
+        city: String,
+    ): DataOrException <CurrentDayMausamData, Boolean, Exception> {
 
-        val response: MausamData = try {
-            api.getMausamData(lat = latQuery, lon = lonQuery)
+        val response: CurrentDayMausamData = try {
+            api.getCurrentDayData(q = city)
         } catch(e: Exception) {
+            return DataOrException(e = e)
+        }
+        return DataOrException(response)
+    }
+
+    suspend fun getSevenDaysMausamData(
+        city: String
+    ): DataOrException<SevenDaysMausamData, Boolean, Exception> {
+
+        val response: SevenDaysMausamData = try {
+            api.getSevenDaysData(q = city)
+        } catch (e: Exception) {
             return DataOrException(e = e)
         }
         return DataOrException(response)

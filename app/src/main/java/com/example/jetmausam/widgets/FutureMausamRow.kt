@@ -30,20 +30,22 @@ fun FutureMausamRow(
     modifier: Modifier = Modifier,
     valueFontSize: TextUnit = 35.sp,
     unitFontSize: TextUnit = 20.sp,
-    valueText: String = "10",
+    day: String = "Monday",
+    minTemp: Double = 0.0,
+    maxTemp: Double = 0.0,
     unitInCel: Boolean = true
 ) {
     Row(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(modifier = Modifier.weight(0.3f),
-            text = "Monday",
+        Text(modifier = Modifier.weight(0.35f),
+            text = day,
             fontFamily = MyFonts.alegreyaSansFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )
         Box(
-            modifier = Modifier.weight(0.4f).height(30.dp).background(Color.Transparent),
+            modifier = Modifier.weight(0.35f).height(30.dp).background(Color.Transparent),
             contentAlignment = Alignment.Center
         ) {
             Image(painter = painterResource(id = R.drawable.wind_info_col), contentDescription = "",
@@ -51,9 +53,9 @@ fun FutureMausamRow(
         }
         TempRow(
             modifier = Modifier.weight(0.15f),
-            valueFontSize = valueFontSize, unitFontSize = unitFontSize, valueText = valueText, unitInCel = unitInCel)
+            valueFontSize = valueFontSize, unitFontSize = unitFontSize, valueText = minTemp.toInt().toString(), unitInCel = unitInCel)
         TempRow(
             modifier = Modifier.weight(0.15f),
-            valueFontSize = valueFontSize, unitFontSize = unitFontSize, valueText = valueText, unitInCel = unitInCel)
+            valueFontSize = valueFontSize, unitFontSize = unitFontSize, valueText = maxTemp.toInt().toString(), unitInCel = unitInCel)
     }
 }

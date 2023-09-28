@@ -1,18 +1,17 @@
 package com.example.jetmausam.widgets
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +38,7 @@ fun  MausamCard(
     modifier: Modifier = Modifier.fillMaxSize(),
     stateAndCountry: String = "Delhi, IN",
     utcTime: Long = 0,
+    tempValue: Double = 15.0,
     tempUnit: TextUnit = 50.sp,
     otherTextUnit: TextUnit = 20.sp,
     cornerRadius: Dp = 35.dp,
@@ -134,14 +134,15 @@ fun  MausamCard(
                     otherTextUnit = otherTextUnit,
                     tempUnit = tempUnit,
                     utcTime = utcTime,
-                    tempValue = "15",
+                    tempValue = tempValue.toString(),
                     unitInCel = true
                 )
             } else {
                 TextContentIfNotNavigable(
                     otherTextUnit = otherTextUnit,
                     tempUnit = tempUnit,
-                    tempValue = "15",
+                    utcTime = utcTime,
+                    tempValue = tempValue,
                     unitInCel = true
                 )
             }
@@ -169,11 +170,11 @@ fun TextContentIfNavigable(stateAndCountry: String,
         TempRow(
             valueFontSize = tempUnit,
             unitFontSize = otherTextUnit,
-            valueText = "15",
+            valueText = tempValue,
             unitInCel = unitInCel
         )
 
-        Text(text = UTCtoISTFormatter.formatUTCtoIST(utcTime),
+        Text(text = UTCtoISTFormatter.getDayTimeFromUST(utcTime),
             fontFamily = MyFonts.alegreyaSansFamily,
             fontSize = otherTextUnit,
             fontWeight = FontWeight.Normal,
@@ -184,9 +185,10 @@ fun TextContentIfNavigable(stateAndCountry: String,
 
 @Composable
 fun TextContentIfNotNavigable(
-    tempValue: String,
-    unitInCel: Boolean,
+    utcTime: Long,
+    tempValue: Double,
     tempUnit: TextUnit,
+    unitInCel: Boolean,
     otherTextUnit: TextUnit,
 ) {
     Column(
@@ -197,11 +199,11 @@ fun TextContentIfNotNavigable(
         TempRow(
             valueFontSize = tempUnit,
             unitFontSize = otherTextUnit,
-            valueText = "15",
+            valueText = tempValue.toInt().toString(),
             unitInCel = unitInCel
         )
-
-        Text(text = "10 am",
+        Log.d("Aneesh", "TextContentIfNotNavigable: ${utcTime}")
+        Text(text = if(utcTime < 12) "$utcTime AM" else "${utcTime-12} PM",
             fontFamily = MyFonts.alegreyaSansFamily,
             fontSize = otherTextUnit,
             fontWeight = FontWeight.Normal,

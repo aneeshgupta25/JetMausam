@@ -1,4 +1,4 @@
-package com.example.jetmausam.model.mausam
+package com.example.jetmausam.model.current_day_mausam
 
 data class Wind(
     val deg: Int,

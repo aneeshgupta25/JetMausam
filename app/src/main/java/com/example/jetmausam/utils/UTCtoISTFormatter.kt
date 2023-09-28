@@ -2,11 +2,20 @@ package com.example.jetmausam.utils
 
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object UTCtoISTFormatter {
-    fun formatUTCtoIST(utcTimeMillis: Long): String {
+    fun getDayTimeFromUST(utcTimeMillis: Long): String {
+        // Format the IST ZonedDateTime as "Sunday, 1 am" using DateTimeFormatter
+        var istDateTime = getZoneDateTime(utcTimeMillis)
+        return istDateTime!!.format(
+            DateTimeFormatter.ofPattern("EEEE, hh:mm a", Locale.ENGLISH)
+        )
+    }
+
+    private fun getZoneDateTime(utcTimeMillis: Long): ZonedDateTime? {
         // Convert UTC time to Instant
         val utcInstant = Instant.ofEpochMilli(utcTimeMillis)
 
@@ -15,12 +24,6 @@ object UTCtoISTFormatter {
         val istZone = ZoneId.of("Asia/Kolkata")
 
         // Convert UTC Instant to IST ZonedDateTime
-        val istDateTime = utcInstant.atZone(utcZone).withZoneSameInstant(istZone)
-
-        // Format the IST ZonedDateTime as "Sunday, 1 am" using DateTimeFormatter
-
-        return istDateTime.format(
-            DateTimeFormatter.ofPattern("EEEE, h a", Locale.ENGLISH)
-        )
+        return utcInstant.atZone(utcZone).withZoneSameInstant(istZone)
     }
 }
