@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetmausam.R
 import com.example.jetmausam.data.DataOrException
+import com.example.jetmausam.navigation.CustomBottomNavigation
 import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
@@ -64,13 +65,15 @@ fun MainScreen(
 //    } else {
 //        MainScaffold(viewModel, navController)
 //    }
-//    viewModel.getMausam("Delhi, IN")
-    Log.d("TAG", "MainScreen: $city")
-    val sevenDaysMausamData = viewModel.sevenDaysMausamData.value
 
-    LaunchedEffect(key1 = city) {
-        Log.d("TAG", "MainScreen: Yahan aya")
-            viewModel.getMausam(city.toString())
+    val sevenDaysMausamData = viewModel.sevenDaysMausamData.value
+    if(viewModel.cityChange.value) {
+        viewModel.cityChangeReceived()
+        LaunchedEffect(key1 = viewModel.city.value) {
+            Log.d("TAG2", "${viewModel.city.value}")
+            Log.d("TAG", "MainScreen: Yahan aya")
+            viewModel.getMausam(viewModel.city.value)
+        }
     }
     if(sevenDaysMausamData.loading == true) {
         CircularProgressIndicator()
@@ -90,7 +93,10 @@ fun MainScaffold(
 ) {
     var sevenDaysMausamData = viewModel.sevenDaysMausamData.value
     Scaffold(
-        topBar = { MausamAppBar() },
+        topBar = { MausamAppBar(
+            viewModel = viewModel,
+            navController = navController
+        ) },
         containerColor = Color.Transparent,
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
@@ -99,7 +105,8 @@ fun MainScaffold(
                     AppConstants.Purple
                 )
             )
-        )
+        ),
+        bottomBar = { CustomBottomNavigation(navController = navController) }
     ) {
         Box(modifier = Modifier
             .padding(it)
@@ -177,28 +184,38 @@ fun MausamInfoRow(
     value: String
 ) {
     Row(modifier = modifier) {
-        Image(painter = painterResource(id = imageResource), contentDescription = "",
+        Image(
+            painter = painterResource(id = imageResource), contentDescription = "",
             modifier = Modifier
                 .weight(0.2f),
-            contentScale = ContentScale.FillHeight)
-        Box(modifier = Modifier
-            .weight(0.5f)
-            .fillMaxHeight(),
-            contentAlignment = Alignment.Center) {
-            Text(text = text,
+            contentScale = ContentScale.FillHeight
+        )
+        Box(
+            modifier = Modifier
+                .weight(0.5f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
                 fontFamily = MyFonts.alegreyaSansFamily,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,)
+                color = Color.White,
+            )
         }
-        Box(modifier = Modifier
-            .weight(0.3f)
-            .fillMaxHeight(),
-            contentAlignment = Alignment.Center) {
-            Text(text = value,
+        Box(
+            modifier = Modifier
+                .weight(0.3f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = value,
                 fontFamily = MyFonts.alegreyaSansFamily,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White,)
+                color = Color.White,
+            )
         }
     }
 }

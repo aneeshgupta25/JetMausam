@@ -1,6 +1,5 @@
 package com.example.jetmausam.screens.main
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -24,13 +23,18 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
     = mutableStateOf(DataOrException(null, true, Exception()))
     private var _sevenDaysMausamData: MutableState<DataOrException<SevenDaysMausamData, Boolean, Exception>>
     = mutableStateOf(DataOrException(null, true, Exception()))
-    private var currentCalendarDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-    private var currentCustomDayOfWeek = Utils.mapCalendarDayToCustomDay(currentCalendarDayOfWeek)
+    private var _currentCalendarDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+    private var _currentCustomDayOfWeek = Utils.mapCalendarDayToCustomDay(_currentCalendarDayOfWeek)
+    // handles drop-down menu visibility
+    private var _dropDownDialogVisibility: MutableState<Boolean> = mutableStateOf(false)
+    private var _city: MutableState<String> = mutableStateOf("Delhi, IN")
+    private var _cityChange: MutableState<Boolean> = mutableStateOf(true)
 
-    var currentDayMausamData: State<DataOrException<CurrentDayMausamData, Boolean, Exception>>
-    = _currentDayMausamData
-    var sevenDaysMausamData: State<DataOrException<SevenDaysMausamData, Boolean, Exception>>
-    = _sevenDaysMausamData
+    var currentDayMausamData: State<DataOrException<CurrentDayMausamData, Boolean, Exception>> = _currentDayMausamData
+    var sevenDaysMausamData: State<DataOrException<SevenDaysMausamData, Boolean, Exception>> = _sevenDaysMausamData
+    var dropDownDialogVisibility: State<Boolean> = _dropDownDialogVisibility
+    var city: State<String> = _city
+    var cityChange: State<Boolean> = _cityChange
 
     fun getMausam(city: String) {
         viewModelScope.launch {
@@ -48,7 +52,7 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
     }
 
     fun getCustomDayWeek(daysToAdd: Int): String {
-        return currentCustomDayOfWeek.plus(daysToAdd).name
+        return _currentCustomDayOfWeek.plus(daysToAdd).name
     }
 
     fun getCustomImageOfMausam(defaultId: String): Int {
@@ -74,6 +78,19 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
             else -> throw IllegalArgumentException("Invalid Icon: $defaultId")
 
         }
+    }
+
+    fun toggleDropDownDialog() {
+        _dropDownDialogVisibility.value = !_dropDownDialogVisibility.value
+    }
+
+    fun updateCity(city: String) {
+        _cityChange.value = _city.value != city
+        _city.value = city
+    }
+
+    fun cityChangeReceived() {
+        _cityChange.value = false
     }
 
 }

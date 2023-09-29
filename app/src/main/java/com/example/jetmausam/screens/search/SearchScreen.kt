@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.room.util.TableInfo
 import com.example.jetmausam.navigation.MausamScreens
+import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
 
@@ -46,6 +47,7 @@ import com.example.jetmausam.utils.MyFonts
 @Composable
 //@Preview
 fun SearchScreen(
+    viewModel: MainViewModel,
     navController: NavController
 ) {
     Scaffold(
@@ -75,7 +77,9 @@ fun SearchScreen(
         Box(modifier = Modifier.padding(it)) {
             SearchBar {
                 Log.d("TAG", "SearchScreen: $it")
-                navController.navigate(MausamScreens.MainScreen.name+"/$it")
+//                navController.navigate(MausamScreens.MainScreen.name+"/$it")
+                viewModel.updateCity(it)
+                navController.popBackStack()
             }
         }
     }
