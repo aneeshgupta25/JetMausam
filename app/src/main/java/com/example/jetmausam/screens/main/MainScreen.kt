@@ -1,5 +1,6 @@
 package com.example.jetmausam.screens.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetmausam.R
+import com.example.jetmausam.data.DataOrException
 import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
@@ -38,7 +41,8 @@ import java.time.Instant
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    navController: NavController
+    navController: NavController,
+    city: String?
 ) {
 //    val geocodingData = produceState<DataOrException<GeoCodingData, Boolean, Exception>>(
 //        initialValue = DataOrException(loading = true)
@@ -61,13 +65,12 @@ fun MainScreen(
 //        MainScaffold(viewModel, navController)
 //    }
 //    viewModel.getMausam("Delhi, IN")
-//    val mausamData = viewModel.mausamData.value
+    Log.d("TAG", "MainScreen: $city")
     val sevenDaysMausamData = viewModel.sevenDaysMausamData.value
 
-    LaunchedEffect(key1 = Unit) {
-        if(sevenDaysMausamData.loading == true) {
-            viewModel.getMausam("Delhi, IN")
-        }
+    LaunchedEffect(key1 = city) {
+        Log.d("TAG", "MainScreen: Yahan aya")
+            viewModel.getMausam(city.toString())
     }
     if(sevenDaysMausamData.loading == true) {
         CircularProgressIndicator()
@@ -117,7 +120,7 @@ fun MainScaffold(
                     utcTime = Instant.now().toEpochMilli(),
                     imgId = viewModel.getCustomImageOfMausam(defaultId = sevenDaysMausamData.data!!.list[0].weather[0].icon),
                 ) {
-                    navController.navigate(MausamScreens.StatsScreen.name)
+                    navController.navigate(MausamScreens.SearchScreen.name)
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 MausamInfoSurface(modifier = Modifier
