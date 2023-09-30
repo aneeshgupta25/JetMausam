@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.jetmausam.utils.AppConstants
-import com.example.jetmausam.utils.BottomNavItem
 
 @Composable
 fun CustomBottomNavigation(

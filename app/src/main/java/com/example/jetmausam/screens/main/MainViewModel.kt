@@ -14,6 +14,7 @@ import com.example.jetmausam.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -85,7 +86,8 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
     }
 
     fun updateCity(city: String) {
-        _cityChange.value = _city.value != city
+        val updatedString = city.lowercase(Locale.ROOT).trim()
+        _cityChange.value = _city.value != updatedString
         _city.value = city
     }
 
