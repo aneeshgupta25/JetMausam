@@ -5,7 +5,7 @@ import com.example.jetmausam.model.db.Favourites
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MausamDbRepository @Inject constructor(val mausamDao: MausamDao) {
+class MausamDbRepository @Inject constructor(private val mausamDao: MausamDao) {
 
     fun getFavourites(): Flow<List<Favourites>> = mausamDao.getFavourites()
     suspend fun getFavById(city: String): Favourites = mausamDao.getFavById(city = city)
