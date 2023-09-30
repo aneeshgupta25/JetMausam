@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.jetmausam.MainActivity
 import com.example.jetmausam.screens.about.AboutScreen
 import com.example.jetmausam.screens.main.MainScreen
 import com.example.jetmausam.screens.main.MainViewModel
@@ -15,7 +16,9 @@ import com.example.jetmausam.screens.splash.SplashScreen
 import com.example.jetmausam.screens.stats.StatsScreen
 
 @Composable
-fun MausamNavigation() {
+fun MausamNavigation(
+    activity: MainActivity
+) {
     val navController = rememberNavController()
     val mainViewModel = hiltViewModel<MainViewModel>()
     NavHost(
@@ -25,14 +28,17 @@ fun MausamNavigation() {
         composable(route = MausamScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
-        var route = MausamScreens.MainScreen.name
-        composable(route = "$route/{city}",
-            arguments = listOf(
-                navArgument("city") { type = NavType.StringType }
-            )
-        ) { navArgument ->
-            var city = navArgument.arguments?.getString("city")
-            MainScreen(navController = navController, viewModel = mainViewModel, city = city)
+//        var route = MausamScreens.MainScreen.name
+//        composable(route = "$route/{city}",
+//            arguments = listOf(
+//                navArgument("city") { type = NavType.StringType }
+//            )
+//        ) { navArgument ->
+//            var city = navArgument.arguments?.getString("city")
+//            MainScreen(navController = navController, viewModel = mainViewModel, city = city)
+//        }
+        composable(route = MausamScreens.MainScreen.name) {
+            MainScreen(viewModel = mainViewModel, navController = navController, activity = activity)
         }
         composable(route = MausamScreens.StatsScreen.name) {
             StatsScreen(viewModel = mainViewModel)
@@ -41,7 +47,7 @@ fun MausamNavigation() {
             SearchScreen(viewModel = mainViewModel, navController = navController)
         }
         composable(route = MausamScreens.AboutScreen.name) {
-            AboutScreen()
+            AboutScreen(navController = navController)
         }
     }
 }

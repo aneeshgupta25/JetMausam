@@ -60,7 +60,7 @@ fun SplashScreen(
                 )
             )
             delay(2000)
-            navController.navigate(MausamScreens.MainScreen.name+"/Delhi,IN")
+            navController.navigate(MausamScreens.MainScreen.name)
         })
 
         Column(

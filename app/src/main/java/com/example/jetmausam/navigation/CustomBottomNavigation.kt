@@ -1,5 +1,6 @@
 package com.example.jetmausam.navigation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,8 @@ fun CustomBottomNavigation(
         BottomNavItem.Profile
     )
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 30.dp)
             .background(Color.Transparent),
         shape = RoundedCornerShape(20.dp),
@@ -43,6 +45,7 @@ fun CustomBottomNavigation(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             items.forEach { item ->
+                Log.d("Aneesh", "CustomBottomNavigation: ${item.route} ${currentRoute}")
                 BottomNavigationItem(
                     selected = currentRoute == item.route,
                     onClick = {
@@ -59,7 +62,7 @@ fun CustomBottomNavigation(
                     icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
                     label = { Text(text = item.label) },
                     alwaysShowLabel = false,
-                    selectedContentColor = Color.White,
+                    selectedContentColor = AppConstants.Pink,
                     unselectedContentColor = Color.LightGray
                 )
             }

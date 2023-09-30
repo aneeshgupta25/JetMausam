@@ -1,6 +1,7 @@
 package com.example.jetmausam.screens.search
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,10 +39,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.room.util.TableInfo
+import com.example.jetmausam.navigation.CustomBottomNavigation
 import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,15 +75,20 @@ fun SearchScreen(
                             contentDescription = "Navigate Back")
                     }
                 })
+        },
+        bottomBar = {
+            CustomBottomNavigation(navController = navController)
         }
     ) {
         Box(modifier = Modifier.padding(it)) {
             SearchBar {
                 Log.d("TAG", "SearchScreen: $it")
-//                navController.navigate(MausamScreens.MainScreen.name+"/$it")
                 viewModel.updateCity(it)
-                navController.popBackStack()
+                navController.navigate(MausamScreens.MainScreen.name)
             }
+        }
+        BackHandler(true) {
+            navController.popBackStack(route = MausamScreens.MainScreen.name, inclusive = false)
         }
     }
 }
@@ -99,9 +107,9 @@ fun SearchBar(
             placeHolder = "Search",
             onAction = KeyboardActions {
                 if(!valid) return@KeyboardActions
+                keyboardController?.hide()
                 onSearch(searchQueryState.value)
                 searchQueryState.value = ""
-                keyboardController?.hide()
             }
         )
     }

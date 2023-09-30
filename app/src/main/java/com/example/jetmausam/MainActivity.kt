@@ -24,13 +24,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MausamApp()
+            MausamApp(this)
         }
     }
 }
 
 @Composable
-fun MausamApp() {
+fun MausamApp(activity: MainActivity = MainActivity()) {
     JetMausamTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -42,7 +42,7 @@ fun MausamApp() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //                val viewModel: MainViewModel = viewModel()
-                MausamNavigation()
+                MausamNavigation(activity)
             }
         }
     }
