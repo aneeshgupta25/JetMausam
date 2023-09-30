@@ -1,8 +1,11 @@
 package com.example.jetmausam.widgets
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
@@ -24,29 +28,35 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetmausam.R
+import com.example.jetmausam.model.db.Favourites
+import com.example.jetmausam.screens.fav.FavViewModel
 import com.example.jetmausam.screens.main.MainViewModel
+import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.Utils
 
 //@Preview
 @Composable
 fun MausamAppBar(
-    viewModel: MainViewModel,
-    navController: NavController
+    mainViewModel: MainViewModel,
+    navController: NavController,
+    favViewModel: FavViewModel,
+    onFavClick: () -> Pair<String, String>
 ) {
-    val screenHeight = Utils.getScreenHeight()
-    if(viewModel.dropDownDialogVisibility.value) {
-        CustomDropDownMenu(viewModel = viewModel, navController = navController)
-    }
+    if(mainViewModel.dropDownDialogVisibility.value)
+        CustomDropDownMenu(viewModel = mainViewModel, navController = navController)
     Row(
         modifier = Modifier
             .fillMaxHeight(0.1f)
@@ -58,13 +68,34 @@ fun MausamAppBar(
         Image(painter = painterResource(id = R.drawable.app_logo), contentDescription = "Logo",
         modifier = Modifier.fillMaxHeight(),
             contentScale = ContentScale.FillHeight)
-        IconButton(onClick = { viewModel.toggleDropDownDialog() }) {
-            Surface(
-                shape = CircleShape,
-                color = Color.Transparent
-            ) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings",
-                    tint = Color.White)
+        Row {
+            IconButton(onClick = {
+                mainViewModel.toggleAddedToFavs()
+                var pair = onFavClick()
+                if(mainViewModel.addedToFavs.value) {
+                    favViewModel.insertFavCity(Favourites(pair.first.trim(), pair.second.trim()))
+                } else {
+                    favViewModel.deleteFavCity(Favourites(pair.first.trim(), pair.second.trim()))
+                }
+            }) {
+                Surface(
+                    shape = CircleShape,
+                    color = Color.Transparent
+                ) {
+                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites",
+                        tint = if(mainViewModel.addedToFavs.value) Color(0xFF5E4FC1)
+                        else Color.White
+                        )
+                }
+            }
+            IconButton(onClick = { mainViewModel.toggleDropDownDialog() }) {
+                Surface(
+                    shape = CircleShape,
+                    color = Color.Transparent
+                ) {
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings",
+                        tint = Color.White)
+                }
             }
         }
     }

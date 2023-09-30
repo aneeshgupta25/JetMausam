@@ -1,6 +1,9 @@
 package com.example.jetmausam.screens.fav
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetmausam.model.db.Favourites
@@ -14,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FavViewModel @Inject constructor(val favRepository: MausamDbRepository)
+class FavViewModel @Inject constructor(private val favRepository: MausamDbRepository)
     : ViewModel() {
     private val _favList = MutableStateFlow<List<Favourites>>(emptyList())
     val favList = _favList.asStateFlow()
@@ -23,18 +26,17 @@ class FavViewModel @Inject constructor(val favRepository: MausamDbRepository)
         viewModelScope.launch(Dispatchers.IO) {
             favRepository.getFavourites().distinctUntilChanged()
                 .collect { listOfFavs ->
-                    if(listOfFavs.isNullOrEmpty()) {
-                        Log.d("TAG", ": empty")
-                    } else {
-                        _favList.value = listOfFavs
-                        Log.d("TAG", ": $listOfFavs")
-                    }
+                    _favList.value = listOfFavs
                 }
         }
     }
 
     fun insertFavCity(favCity: Favourites) = viewModelScope.launch { favRepository.insertFavCity(favCity) }
-    fun getFavById(city: String) = viewModelScope.launch { favRepository.getFavById(city) }
+    suspend fun getFavById(city: String): String? {
+        val favCity = favRepository.getFavById(city)
+        return if(favCity != null) "${favCity.city}, ${favCity.country}"
+            else null
+    }
     fun updateFavCity(favCity: Favourites) = viewModelScope.launch { favRepository.updateFavCity(favCity) }
     fun deleteAllFavCities() = viewModelScope.launch { favRepository.deleteAllFavCities() }
     fun deleteFavCity(favCity: Favourites) = viewModelScope.launch { favRepository.deleteFavCity(favCity) }

@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.jetmausam.MainActivity
 import com.example.jetmausam.screens.about.AboutScreen
+import com.example.jetmausam.screens.fav.FavViewModel
 import com.example.jetmausam.screens.fav.FavouritesScreen
 import com.example.jetmausam.screens.main.MainScreen
 import com.example.jetmausam.screens.main.MainViewModel
@@ -22,6 +23,7 @@ fun MausamNavigation(
 ) {
     val navController = rememberNavController()
     val mainViewModel = hiltViewModel<MainViewModel>()
+    val favViewModel = hiltViewModel<FavViewModel>()
     NavHost(
         navController = navController,
         startDestination = MausamScreens.SplashScreen.name
@@ -39,7 +41,8 @@ fun MausamNavigation(
 //            MainScreen(navController = navController, viewModel = mainViewModel, city = city)
 //        }
         composable(route = MausamScreens.MainScreen.name) {
-            MainScreen(viewModel = mainViewModel, navController = navController, activity = activity)
+            MainScreen(viewModel = mainViewModel, navController = navController, activity = activity,
+                favViewModel = favViewModel)
         }
         composable(route = MausamScreens.StatsScreen.name) {
             StatsScreen(viewModel = mainViewModel)
@@ -51,7 +54,8 @@ fun MausamNavigation(
             AboutScreen(navController = navController)
         }
         composable(route = MausamScreens.FavoriteScreen.name) {
-            FavouritesScreen(navController = navController)
+            FavouritesScreen(navController = navController, favViewModel = favViewModel,
+                mainViewModel = mainViewModel)
         }
     }
 }

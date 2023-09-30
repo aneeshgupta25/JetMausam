@@ -5,12 +5,16 @@ import androidx.room.Room
 import com.example.jetmausam.data.MausamDao
 import com.example.jetmausam.data.MausamDatabase
 import com.example.jetmausam.network.MausamApi
+import com.example.jetmausam.repository.MausamDbRepository
 import com.example.jetmausam.repository.MausamRepository
+import com.example.jetmausam.screens.fav.FavViewModel
+import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,6 +25,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideMainViewModel(mausamRepository: MausamRepository,
+                             favViewModel: FavViewModel): MainViewModel
+    = MainViewModel(mausamRepository = mausamRepository, favViewModel = favViewModel)
+
+    @Singleton
+    @Provides
+    fun provideFavViewModel(favRepository: MausamDbRepository): FavViewModel
+    = FavViewModel(favRepository = favRepository)
 
     @Singleton
     @Provides
