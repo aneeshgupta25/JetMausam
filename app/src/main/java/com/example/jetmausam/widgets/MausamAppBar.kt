@@ -55,7 +55,8 @@ fun MausamAppBar(
     mainViewModel: MainViewModel,
     navController: NavController,
     favViewModel: FavViewModel,
-    onFavClick: () -> Pair<String, String>
+    onFavClick: () -> Pair<String, String>,
+    exception: Boolean
 ) {
     if(mainViewModel.dropDownDialogVisibility.value)
         CustomDropDownMenu(viewModel = mainViewModel, navController = navController)
@@ -71,23 +72,25 @@ fun MausamAppBar(
         modifier = Modifier.fillMaxHeight(),
             contentScale = ContentScale.FillHeight)
         Row {
-            IconButton(onClick = {
-                mainViewModel.toggleAddedToFavs()
-                var pair = onFavClick()
-                if(mainViewModel.addedToFavs.value) {
-                    favViewModel.insertFavCity(Favourites(pair.first.trim(), pair.second.trim()))
-                } else {
-                    favViewModel.deleteFavCity(Favourites(pair.first.trim(), pair.second.trim()))
-                }
-            }) {
-                Surface(
-                    shape = CircleShape,
-                    color = Color.Transparent
-                ) {
-                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites",
-                        tint = if(mainViewModel.addedToFavs.value) Color(0xFF5E4FC1)
-                        else Color.White
-                        )
+            if(!exception) {
+                IconButton(onClick = {
+                    mainViewModel.toggleAddedToFavs()
+                    var pair = onFavClick()
+                    if(mainViewModel.addedToFavs.value) {
+                        favViewModel.insertFavCity(Favourites(pair.first.trim(), pair.second.trim()))
+                    } else {
+                        favViewModel.deleteFavCity(Favourites(pair.first.trim(), pair.second.trim()))
+                    }
+                }) {
+                    Surface(
+                        shape = CircleShape,
+                        color = Color.Transparent
+                    ) {
+                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites",
+                            tint = if(mainViewModel.addedToFavs.value) Color(0xFF5E4FC1)
+                            else Color.White
+                            )
+                    }
                 }
             }
             IconButton(onClick = { mainViewModel.toggleDropDownDialog() }) {

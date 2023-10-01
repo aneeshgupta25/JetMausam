@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jetmausam.MainActivity
 import com.example.jetmausam.R
@@ -66,12 +71,37 @@ fun MainScreen(
     val sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
     if(sevenDaysMausamData.loading == true) {
         CircularProgressIndicator()
-    } else if(sevenDaysMausamData.e != null) {
-
     } else {
         MainScaffold(mainViewModel = mainViewModel, navController = navController, activity = activity,
-             favViewModel = favViewModel, unitInCel = settingsViewModel.unitInCel.value
+             favViewModel = favViewModel, unitInCel = settingsViewModel.unitInCel.value,
+            exception = sevenDaysMausamData.e != null
         )
+    }
+}
+
+@Preview
+@Composable
+fun ExceptionResponse() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(painter = painterResource(id = R.drawable.exception),
+                contentDescription = "City Not Found!",
+                modifier = Modifier.fillMaxWidth())
+            Text(text = "City Not Found!!",
+                fontFamily = MyFonts.alegreyaSansFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+                textAlign = TextAlign.Center
+                )
+        }
     }
 }
 
@@ -83,7 +113,8 @@ fun MainScaffold(
     navController: NavController,
     activity: MainActivity,
     favViewModel: FavViewModel,
-    unitInCel: Boolean
+    unitInCel: Boolean,
+    exception: Boolean
 ) {
     var sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
     Scaffold(
@@ -94,7 +125,8 @@ fun MainScaffold(
             onFavClick = {
                 Pair(mainViewModel.currentDayMausamData.value.data!!.city.name.lowercase(),
                      mainViewModel.currentDayMausamData.value.data!!.city.country.lowercase())
-            }
+            },
+            exception = exception
         ) },
         containerColor = Color.Transparent,
         modifier = Modifier.background(
@@ -107,37 +139,41 @@ fun MainScaffold(
         ),
         bottomBar = { CustomBottomNavigation(navController = navController) }
     ) {
-        Box(modifier = Modifier
-            .padding(it)
-            .background(Color.Transparent)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MausamCard(
+        if(exception) {
+            ExceptionResponse()
+        } else {
+            Box(modifier = Modifier
+                .padding(it)
+                .background(Color.Transparent)) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .fillMaxHeight(0.6f),
-                    stateAndCountry = "${sevenDaysMausamData.data!!.city.name}, ${sevenDaysMausamData.data!!.city.country}",
-                    tempValue = sevenDaysMausamData.data!!.list[0].temp.day,
-                    utcTime = Instant.now().toEpochMilli(),
-                    imgId = mainViewModel.getCustomImageOfMausam(defaultId = sevenDaysMausamData.data!!.list[0].weather[0].icon),
-                    unitInCel = unitInCel
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    navController.navigate(MausamScreens.StatsScreen.name)
+                    MausamCard(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .fillMaxHeight(0.6f),
+                        stateAndCountry = "${sevenDaysMausamData.data!!.city.name}, ${sevenDaysMausamData.data!!.city.country}",
+                        tempValue = sevenDaysMausamData.data!!.list[0].temp.day,
+                        utcTime = Instant.now().toEpochMilli(),
+                        imgId = mainViewModel.getCustomImageOfMausam(defaultId = sevenDaysMausamData.data!!.list[0].weather[0].icon),
+                        unitInCel = unitInCel
+                    ) {
+                        navController.navigate(MausamScreens.StatsScreen.name)
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    MausamInfoSurface(modifier = Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth(0.6f),
+                        cloudinessValue = sevenDaysMausamData.data!!.list[0].clouds,
+                        humidityValue = sevenDaysMausamData.data!!.list[0].humidity,
+                        windSpeedValue = sevenDaysMausamData.data!!.list[0].speed
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
-                Spacer(modifier = Modifier.height(15.dp))
-                MausamInfoSurface(modifier = Modifier
-                    .fillMaxHeight(0.5f)
-                    .fillMaxWidth(0.6f),
-                    cloudinessValue = sevenDaysMausamData.data!!.list[0].clouds,
-                    humidityValue = sevenDaysMausamData.data!!.list[0].humidity,
-                    windSpeedValue = sevenDaysMausamData.data!!.list[0].speed
-                )
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }

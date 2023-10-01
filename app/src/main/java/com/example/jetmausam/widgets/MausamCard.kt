@@ -204,7 +204,6 @@ fun TextContentIfNotNavigable(
             valueText = tempValue.toInt().toString(),
             unitInCel = unitInCel
         )
-        Log.d("Aneesh", "TextContentIfNotNavigable: ${utcTime}")
         Text(text = if(utcTime < 12) "$utcTime AM" else "${utcTime-12} PM",
             fontFamily = MyFonts.alegreyaSansFamily,
             fontSize = otherTextUnit,

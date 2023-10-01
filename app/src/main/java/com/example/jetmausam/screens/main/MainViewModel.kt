@@ -115,10 +115,4 @@ class MainViewModel @Inject constructor(
         _addedToFavs.value = !_addedToFavs.value
     }
 
-    fun setAddedToFavsFalse() {
-
-        Log.d("ANEESH", "setAddedToFavsFalse: ${_addedToFavs.value}")
-        Log.d("ANEESH", "setAddedToFavsFalse: ${_city.value}")
-    }
-
 }

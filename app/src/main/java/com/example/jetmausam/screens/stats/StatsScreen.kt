@@ -167,7 +167,6 @@ fun StatsScreen(
                             horizontalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
                             items(currentDayMausamData.data!!.list) {
-                                Log.d("Aneesh", "StatsScreen: ${it.dt_txt}")
                                 MausamCard(
                                     modifier = Modifier
                                         .fillMaxHeight()

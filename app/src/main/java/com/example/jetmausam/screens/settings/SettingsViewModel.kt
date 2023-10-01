@@ -64,7 +64,6 @@ class SettingsViewModel @Inject constructor(private val mausamDbRepository: Maus
         if((_settingsTextFlag.value == 0 && !_unitInCel.value)
             || (_settingsTextFlag.value == 1 && _unitInCel.value)) {
             _changeInSettings.value = true
-            Log.d("Hello", "saveUpdatedSettings: yahan aya")
             deleteAllUnits()
             insertUnit(Unit(if(_settingsTextFlag.value == 0) "Metric (C)" else "Imperial (F)"))
         } else {

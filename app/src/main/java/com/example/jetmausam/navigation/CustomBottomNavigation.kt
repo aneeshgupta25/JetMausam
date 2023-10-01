@@ -44,11 +44,11 @@ fun CustomBottomNavigation(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             items.forEach { item ->
-                Log.d("Aneesh", "CustomBottomNavigation: ${item.route} ${currentRoute}")
                 BottomNavigationItem(
                     selected = currentRoute == item.route,
                     onClick = {
-                        navController.navigate(item.route) {
+                        if(item.route != currentRoute) {
+                            navController.navigate(item.route) {
 //                            navController.graph.startDestinationRoute?.let { screen_route ->
 //                                popUpTo(screen_route) {
 //                                    saveState = true
@@ -56,6 +56,7 @@ fun CustomBottomNavigation(
 //                            }
 //                            launchSingleTop = true
 //                            restoreState = true
+                            }
                         }
                     },
                     icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
