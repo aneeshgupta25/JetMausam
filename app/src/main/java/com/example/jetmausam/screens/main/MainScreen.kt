@@ -1,5 +1,6 @@
 package com.example.jetmausam.screens.main
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -30,40 +36,42 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetmausam.MainActivity
 import com.example.jetmausam.R
+import com.example.jetmausam.model.db.Unit
 import com.example.jetmausam.navigation.CustomBottomNavigation
 import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.screens.fav.FavViewModel
+import com.example.jetmausam.screens.settings.SettingsViewModel
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.widgets.MausamAppBar
 import com.example.jetmausam.widgets.MausamCard
 import java.time.Instant
-import java.util.Locale
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    mainViewModel: MainViewModel,
     favViewModel: FavViewModel,
+    settingsViewModel: SettingsViewModel,
     navController: NavController,
     activity: MainActivity
-//    city: String?
 ) {
 
-    val sevenDaysMausamData = viewModel.sevenDaysMausamData.value
-    if(viewModel.cityChange.value) {
-        viewModel.cityChangeReceived()
-        LaunchedEffect(key1 = viewModel.city.value) {
-//            viewModel.setAddedToFavsFalse()
-            viewModel.getMausam(viewModel.city.value)
+    if(mainViewModel.cityChange.value || settingsViewModel.changeInSettings.value) {
+        mainViewModel.cityChangeReceived()
+        settingsViewModel.settingsUpdated()
+        LaunchedEffect(key1 = true) {
+            mainViewModel.getMausam(mainViewModel.city.value, unitInCel = settingsViewModel.unitInCel.value)
         }
     }
+    val sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
     if(sevenDaysMausamData.loading == true) {
         CircularProgressIndicator()
     } else if(sevenDaysMausamData.e != null) {
 
     } else {
-        MainScaffold(mainViewModel = viewModel, navController = navController, activity = activity,
-             favViewModel = favViewModel)
+        MainScaffold(mainViewModel = mainViewModel, navController = navController, activity = activity,
+             favViewModel = favViewModel, unitInCel = settingsViewModel.unitInCel.value
+        )
     }
 }
 
@@ -74,7 +82,8 @@ fun MainScaffold(
     mainViewModel: MainViewModel,
     navController: NavController,
     activity: MainActivity,
-    favViewModel: FavViewModel
+    favViewModel: FavViewModel,
+    unitInCel: Boolean
 ) {
     var sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
     Scaffold(
@@ -116,6 +125,7 @@ fun MainScaffold(
                     tempValue = sevenDaysMausamData.data!!.list[0].temp.day,
                     utcTime = Instant.now().toEpochMilli(),
                     imgId = mainViewModel.getCustomImageOfMausam(defaultId = sevenDaysMausamData.data!!.list[0].weather[0].icon),
+                    unitInCel = unitInCel
                 ) {
                     navController.navigate(MausamScreens.StatsScreen.name)
                 }

@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetmausam.R
 import com.example.jetmausam.model.db.Favourites
+import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.screens.fav.FavViewModel
 import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
@@ -104,7 +106,7 @@ fun MausamAppBar(
 @Composable
 fun CustomDropDownMenu(viewModel: MainViewModel, navController: NavController) {
     val items = listOf(
-        Pair("Settings", Icons.Default.Settings)
+        Triple("Settings", Icons.Default.Settings) { navController.navigate(MausamScreens.SettingsScreen.name) }
     )
     Column(
         modifier = Modifier
@@ -120,6 +122,10 @@ fun CustomDropDownMenu(viewModel: MainViewModel, navController: NavController) {
             items.forEach {
                 DropdownMenuItem( text = {
                     Row(
+                        modifier = Modifier.clickable {
+                            viewModel.toggleDropDownDialog()
+                            it.third.invoke()
+                        },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {

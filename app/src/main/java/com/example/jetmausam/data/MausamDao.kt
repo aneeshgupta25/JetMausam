@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.jetmausam.model.db.Favourites
+import com.example.jetmausam.model.db.Unit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -29,4 +30,21 @@ interface MausamDao {
 
     @Delete
     suspend fun deleteFavCity(city: Favourites)
+
+    // Units Table
+    @Query("SELECT * from unit_tbl")
+    fun getUnits(): Flow<List<Unit>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUnit(unit: Unit)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateUnit(unit: Unit)
+
+    @Delete
+    suspend fun deleteUnit(unit: Unit)
+
+    @Query("DELETE from unit_tbl")
+    suspend fun deleteAllUnits()
+
 }

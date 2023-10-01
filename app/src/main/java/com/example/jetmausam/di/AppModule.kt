@@ -9,6 +9,7 @@ import com.example.jetmausam.repository.MausamDbRepository
 import com.example.jetmausam.repository.MausamRepository
 import com.example.jetmausam.screens.fav.FavViewModel
 import com.example.jetmausam.screens.main.MainViewModel
+import com.example.jetmausam.screens.settings.SettingsViewModel
 import com.example.jetmausam.utils.AppConstants
 import dagger.Module
 import dagger.Provides
@@ -28,17 +29,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMainViewModel(mausamRepository: MausamRepository,
-                             favViewModel: FavViewModel): MainViewModel
-    = MainViewModel(mausamRepository = mausamRepository, favViewModel = favViewModel)
-
-    @Singleton
-    @Provides
-    fun provideFavViewModel(favRepository: MausamDbRepository): FavViewModel
-    = FavViewModel(favRepository = favRepository)
-
-    @Singleton
-    @Provides
     fun provideMausamDao(mausamDatabase: MausamDatabase): MausamDao
         = mausamDatabase.mausamDao()
 
@@ -49,7 +39,7 @@ object AppModule {
         context,
         MausamDatabase::class.java,
         "mausam_db"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
 
     @Singleton
@@ -74,6 +64,12 @@ object AppModule {
     @Provides
     fun provideMausamRepository(api: MausamApi): MausamRepository {
         return MausamRepository(api = api)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMausamDbRepository(mausamDao: MausamDao): MausamDbRepository {
+        return MausamDbRepository(mausamDao)
     }
 
 }

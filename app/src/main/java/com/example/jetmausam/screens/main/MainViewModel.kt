@@ -10,8 +10,10 @@ import com.example.jetmausam.R
 import com.example.jetmausam.data.DataOrException
 import com.example.jetmausam.model.current_day_mausam.CurrentDayMausamData
 import com.example.jetmausam.model.seven_days_mausam.SevenDaysMausamData
+import com.example.jetmausam.repository.MausamDbRepository
 import com.example.jetmausam.repository.MausamRepository
 import com.example.jetmausam.screens.fav.FavViewModel
+import com.example.jetmausam.screens.settings.SettingsViewModel
 import com.example.jetmausam.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,8 +22,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val mausamRepository: MausamRepository,
-    private val favViewModel: FavViewModel): ViewModel() {
+class MainViewModel @Inject constructor(
+    private val mausamRepository: MausamRepository,
+    private val mausamDbRepository: MausamDbRepository): ViewModel() {
 
     private var _currentDayMausamData: MutableState<DataOrException<CurrentDayMausamData, Boolean, Exception>>
     = mutableStateOf(DataOrException(null, true, Exception()))
@@ -34,6 +37,8 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
     private var _city: MutableState<String> = mutableStateOf("Delhi, IN")
     private var _cityChange: MutableState<Boolean> = mutableStateOf(true)
     private var _addedToFavs: MutableState<Boolean> = mutableStateOf(false)
+    private var _unitInCel: MutableState<Boolean> = mutableStateOf(false)
+    private var _unitChange: MutableState<Boolean> = mutableStateOf(false)
 
     var currentDayMausamData: State<DataOrException<CurrentDayMausamData, Boolean, Exception>> = _currentDayMausamData
     var sevenDaysMausamData: State<DataOrException<SevenDaysMausamData, Boolean, Exception>> = _sevenDaysMausamData
@@ -41,18 +46,22 @@ class MainViewModel @Inject constructor(private val mausamRepository: MausamRepo
     var city: State<String> = _city
     var cityChange: State<Boolean> = _cityChange
     var addedToFavs: State<Boolean> = _addedToFavs
+    var unitInCel: State<Boolean> = _unitInCel
+    var unitChange: State<Boolean> = _unitChange
 
-    fun getMausam(city: String) {
+    fun getMausam(city: String,
+                  unitInCel: Boolean) {
         viewModelScope.launch {
             // apis
             _currentDayMausamData.value.loading = true
             _sevenDaysMausamData.value.loading = true
-            _currentDayMausamData.value = mausamRepository.getCurrentDayMausamData(city)
-            _sevenDaysMausamData.value = mausamRepository.getSevenDaysMausamData(city)
+            _currentDayMausamData.value = mausamRepository.getCurrentDayMausamData(city, unitInCel)
+            _sevenDaysMausamData.value = mausamRepository.getSevenDaysMausamData(city, unitInCel)
             if(_currentDayMausamData.value.data == null || _sevenDaysMausamData.value.data == null) {
                 // some log
             } else {
-                _addedToFavs.value = favViewModel.getFavById(_currentDayMausamData.value.data!!.city.name.lowercase()) != null
+                _addedToFavs.value = mausamDbRepository.getFavById((_currentDayMausamData.value.data!!.city.name.lowercase())) != null
+//                _addedToFavs.value = favViewModel.getFavById(_currentDayMausamData.value.data!!.city.name.lowercase()) != null
                 _currentDayMausamData.value.loading = false
                 _sevenDaysMausamData.value.loading = false
             }

@@ -44,6 +44,7 @@ import com.example.jetmausam.navigation.MausamScreens
 import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
+import com.example.jetmausam.widgets.CommonAppBar
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,26 +56,8 @@ fun SearchScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(text = "Search",
-                    modifier = Modifier.fillMaxWidth(),
-                    fontFamily = MyFonts.alegreyaSansFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center)
-            },
-                navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Navigate Back")
-                    }
-                },
-                actions = {
-                    Row {
-                        Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                            tint = Color.Transparent,
-                            contentDescription = "Navigate Back")
-                    }
-                })
+            CommonAppBar(title = "Search",
+                navController = navController)
         },
         bottomBar = {
             CustomBottomNavigation(navController = navController)
@@ -104,7 +87,7 @@ fun SearchBar(
         val valid = remember(searchQueryState.value) { searchQueryState.value.trim().isNotEmpty() }
         CommonTextField(
             valueState = searchQueryState,
-            placeHolder = "Search",
+            placeHolder = "Enter City (e.g Delhi)",
             onAction = KeyboardActions {
                 if(!valid) return@KeyboardActions
                 keyboardController?.hide()
@@ -126,7 +109,7 @@ fun CommonTextField(valueState: MutableState<String>,
     OutlinedTextField(value = valueState.value, onValueChange = {
         valueState.value = it
     },
-        label = { Text(text = "Search", fontFamily = MyFonts.alegreyaSansFamily) },
+        label = { Text(text = placeHolder, fontFamily = MyFonts.alegreyaSansFamily) },
         maxLines = 1,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),

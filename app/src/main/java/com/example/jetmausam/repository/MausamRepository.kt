@@ -12,10 +12,11 @@ class MausamRepository @Inject constructor(private val api: MausamApi){
 
     suspend fun getCurrentDayMausamData(
         city: String,
+        unitInCel: Boolean
     ): DataOrException <CurrentDayMausamData, Boolean, Exception> {
 
         val response: CurrentDayMausamData = try {
-            api.getCurrentDayData(q = city)
+            api.getCurrentDayData(q = city, units = if(!unitInCel) "imperial" else "metric")
         } catch(e: Exception) {
             return DataOrException(e = e)
         }
@@ -23,11 +24,12 @@ class MausamRepository @Inject constructor(private val api: MausamApi){
     }
 
     suspend fun getSevenDaysMausamData(
-        city: String
+        city: String,
+        unitInCel: Boolean
     ): DataOrException<SevenDaysMausamData, Boolean, Exception> {
 
         val response: SevenDaysMausamData = try {
-            api.getSevenDaysData(q = city)
+            api.getSevenDaysData(q = city, units = if(!unitInCel) "imperial" else "metric")
         } catch (e: Exception) {
             return DataOrException(e = e)
         }

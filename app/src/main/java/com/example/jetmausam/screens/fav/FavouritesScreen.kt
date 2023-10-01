@@ -48,6 +48,7 @@ import com.example.jetmausam.screens.main.MainViewModel
 import com.example.jetmausam.utils.AppConstants
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.utils.Utils
+import com.example.jetmausam.widgets.CommonAppBar
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,26 +58,8 @@ fun FavouritesScreen(navController: NavController,
                      mainViewModel: MainViewModel) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(text = "Favorite Cities",
-                    modifier = Modifier.fillMaxWidth(),
-                    fontFamily = MyFonts.alegreyaSansFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center)
-            },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Navigate Back")
-                    }
-                },
-                actions = {
-                    Row {
-                        Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                            tint = Color.Transparent,
-                            contentDescription = "Navigate Back")
-                    }
-                })
+            CommonAppBar(title = "Favourite Cities",
+                navController = navController)
         },
         bottomBar = { CustomBottomNavigation(navController = navController) }
     ) {

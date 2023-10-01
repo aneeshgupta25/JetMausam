@@ -28,6 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,30 +44,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.jetmausam.R
 import com.example.jetmausam.screens.main.MainViewModel
+import com.example.jetmausam.screens.settings.SettingsViewModel
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.utils.Utils
 import com.example.jetmausam.utils.UTCtoISTFormatter
+import com.example.jetmausam.widgets.CommonAppBar
 import com.example.jetmausam.widgets.FutureMausamRow
 import com.example.jetmausam.widgets.MausamCard
 import com.example.jetmausam.widgets.MausamInfoCard
 import com.example.jetmausam.widgets.TempRow
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+//@Preview
 @Composable
 fun StatsScreen(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel,
+    settingsViewModel: SettingsViewModel,
+    navController: NavController
 ) {
+    var isImperial by remember { mutableStateOf(false) }
+    val unitFromDb = settingsViewModel.unitList.collectAsState().value[0].unit.split(" ")[0].lowercase()
+    isImperial = unitFromDb == "imperial"
+    
     var sevenDaysMausamData = viewModel.sevenDaysMausamData.value
     var currentDayMausamData = viewModel.currentDayMausamData.value
     val screenWidth = Utils.getScreenWidth()
-    Scaffold(
-        topBar = {
-
-        }
-    ) {
+    Scaffold {
         Box(modifier = Modifier.padding(it)) {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -83,13 +93,7 @@ fun StatsScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        TopAppBar(title = {},
-                            navigationIcon = {
-                                Icon(imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "",
-                                    tint = Color.Black)
-                            },
-                            colors = TopAppBarDefaults.smallTopAppBarColors(Color.Transparent))
+                        CommonAppBar(isStatsScreen = true, navController = navController)
                         Text(
                             text = "${sevenDaysMausamData.data!!.city.name},",
                             fontSize = 25.sp,
@@ -105,7 +109,7 @@ fun StatsScreen(
                             valueFontSize = 80.sp,
                             unitFontSize = 20.sp,
                             valueText = sevenDaysMausamData.data!!.list[0].temp.day.toString(),
-                            unitInCel = true
+                            unitInCel = !isImperial
                         )
                     }
                 }
@@ -174,7 +178,8 @@ fun StatsScreen(
                                     tempUnit = 30.sp,
                                     otherTextUnit = 18.sp,
                                     cornerRadius = 20.dp,
-                                    canNavigateToNextScreen = false
+                                    canNavigateToNextScreen = false,
+                                    unitInCel = !isImperial
                                 )
                             }
                         }
@@ -198,7 +203,7 @@ fun StatsScreen(
                                 imgId = viewModel.getCustomImageOfMausam(it.weather[0].icon),
                                 minTemp = it.temp.min,
                                 maxTemp = it.temp.max,
-                                unitInCel = true
+                                unitInCel = !isImperial
                             )
                         }
                     }

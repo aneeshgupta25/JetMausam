@@ -16,7 +16,7 @@ interface MausamApi {
     suspend fun getCurrentDayData(
         @Query("q") q: String,
         @Query("cnt") cnt: Int = 8,
-        @Query("units") units: String = "metric",
+        @Query("units") units: String,
         @Query("appid") appid: String = AppConstants.API_KEY
     ): CurrentDayMausamData
 
@@ -32,7 +32,7 @@ interface MausamApi {
     suspend fun getSevenDaysData(
         @Query("q") q: String,
         @Query("cnt") cnt: Int = 7,
-        @Query("units") units: String = "metric",
+        @Query("units") units: String,
         @Query("appid") appid: String = AppConstants.API_KEY
     ): SevenDaysMausamData
 

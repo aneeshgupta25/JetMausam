@@ -32,7 +32,7 @@ import com.example.jetmausam.R
 import com.example.jetmausam.utils.MyFonts
 import com.example.jetmausam.utils.UTCtoISTFormatter
 
-@Preview
+//@Preview
 @Composable
 fun  MausamCard(
     modifier: Modifier = Modifier.fillMaxSize(),
@@ -44,6 +44,7 @@ fun  MausamCard(
     otherTextUnit: TextUnit = 20.sp,
     cornerRadius: Dp = 35.dp,
     canNavigateToNextScreen: Boolean = true,
+    unitInCel: Boolean,
     onClick: ()->Unit = {}
 ) {
     ConstraintLayout(
@@ -136,7 +137,7 @@ fun  MausamCard(
                     tempUnit = tempUnit,
                     utcTime = utcTime,
                     tempValue = tempValue.toString(),
-                    unitInCel = true
+                    unitInCel = unitInCel
                 )
             } else {
                 TextContentIfNotNavigable(
@@ -144,7 +145,7 @@ fun  MausamCard(
                     tempUnit = tempUnit,
                     utcTime = utcTime,
                     tempValue = tempValue,
-                    unitInCel = true
+                    unitInCel = unitInCel
                 )
             }
         }
