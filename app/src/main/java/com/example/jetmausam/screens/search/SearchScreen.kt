@@ -88,12 +88,14 @@ fun SearchBar(
         CommonTextField(
             valueState = searchQueryState,
             placeHolder = "Enter City (e.g Delhi)",
-            onAction = KeyboardActions {
-                if(!valid) return@KeyboardActions
-                keyboardController?.hide()
-                onSearch(searchQueryState.value)
-                searchQueryState.value = ""
-            }
+            imeAction = ImeAction.Search,
+            onAction = KeyboardActions(
+                onSearch = {
+                    if(!valid) return@KeyboardActions
+                    onSearch(searchQueryState.value)
+                    searchQueryState.value = ""
+                }
+            )
         )
     }
 }

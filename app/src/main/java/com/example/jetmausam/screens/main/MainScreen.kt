@@ -61,19 +61,25 @@ fun MainScreen(
     activity: MainActivity
 ) {
 
-    if(mainViewModel.cityChange.value || settingsViewModel.changeInSettings.value) {
+    if (mainViewModel.cityChange.value || settingsViewModel.changeInSettings.value) {
         mainViewModel.cityChangeReceived()
         settingsViewModel.settingsUpdated()
         LaunchedEffect(key1 = true) {
-            mainViewModel.getMausam(mainViewModel.city.value, unitInCel = settingsViewModel.unitInCel.value)
+            mainViewModel.getMausam(
+                mainViewModel.city.value,
+                unitInCel = settingsViewModel.unitInCel.value
+            )
         }
     }
     val sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
-    if(sevenDaysMausamData.loading == true) {
-        CircularProgressIndicator()
+    if (sevenDaysMausamData.loading == true) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
     } else {
-        MainScaffold(mainViewModel = mainViewModel, navController = navController, activity = activity,
-             favViewModel = favViewModel, unitInCel = settingsViewModel.unitInCel.value,
+        MainScaffold(
+            mainViewModel = mainViewModel, navController = navController, activity = activity,
+            favViewModel = favViewModel, unitInCel = settingsViewModel.unitInCel.value,
             exception = sevenDaysMausamData.e != null
         )
     }
@@ -92,15 +98,18 @@ fun ExceptionResponse() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(painter = painterResource(id = R.drawable.exception),
+            Image(
+                painter = painterResource(id = R.drawable.exception),
                 contentDescription = "City Not Found!",
-                modifier = Modifier.fillMaxWidth())
-            Text(text = "City Not Found!!",
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "City Not Found!!",
                 fontFamily = MyFonts.alegreyaSansFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 textAlign = TextAlign.Center
-                )
+            )
         }
     }
 }
@@ -118,16 +127,20 @@ fun MainScaffold(
 ) {
     var sevenDaysMausamData = mainViewModel.sevenDaysMausamData.value
     Scaffold(
-        topBar = { MausamAppBar(
-            mainViewModel = mainViewModel,
-            navController = navController,
-            favViewModel = favViewModel,
-            onFavClick = {
-                Pair(mainViewModel.currentDayMausamData.value.data!!.city.name.lowercase(),
-                     mainViewModel.currentDayMausamData.value.data!!.city.country.lowercase())
-            },
-            exception = exception
-        ) },
+        topBar = {
+            MausamAppBar(
+                mainViewModel = mainViewModel,
+                navController = navController,
+                favViewModel = favViewModel,
+                onFavClick = {
+                    Pair(
+                        mainViewModel.currentDayMausamData.value.data!!.city.name.lowercase(),
+                        mainViewModel.currentDayMausamData.value.data!!.city.country.lowercase()
+                    )
+                },
+                exception = exception
+            )
+        },
         containerColor = Color.Transparent,
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
@@ -139,12 +152,14 @@ fun MainScaffold(
         ),
         bottomBar = { CustomBottomNavigation(navController = navController) }
     ) {
-        if(exception) {
+        if (exception) {
             ExceptionResponse()
         } else {
-            Box(modifier = Modifier
-                .padding(it)
-                .background(Color.Transparent)) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .background(Color.Transparent)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -165,9 +180,10 @@ fun MainScaffold(
                         navController.navigate(MausamScreens.StatsScreen.name)
                     }
                     Spacer(modifier = Modifier.height(15.dp))
-                    MausamInfoSurface(modifier = Modifier
-                        .fillMaxHeight(0.5f)
-                        .fillMaxWidth(0.6f),
+                    MausamInfoSurface(
+                        modifier = Modifier
+                            .fillMaxHeight(0.5f)
+                            .fillMaxWidth(0.6f),
                         cloudinessValue = sevenDaysMausamData.data!!.list[0].clouds,
                         humidityValue = sevenDaysMausamData.data!!.list[0].humidity,
                         windSpeedValue = sevenDaysMausamData.data!!.list[0].speed
@@ -215,6 +231,7 @@ fun MausamInfoSurface(
         )
     }
 }
+
 @Composable
 fun MausamInfoRow(
     modifier: Modifier = Modifier,
